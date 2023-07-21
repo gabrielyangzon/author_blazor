@@ -1,0 +1,29 @@
+@page "/author/{id:int}"
+@using blazor_author.Models;
+@using blazor_author.AppStates
+@inject AppState appState;
+@inject NavigationManager navigationManager;
+
+
+<h1>User Id: @Id</h1>
+
+@if(@author != null){
+  <div>@author.FirstName</div>
+  <div>@author.LastName</div>
+}
+else{
+    <div>loading...</div>
+}
+
+@code {
+     [Parameter]
+    public int Id {get; set;}
+    public Author author {get; set;}
+
+        protected override async Task OnInitializedAsync()
+        {
+            if(appState.Author is null) return;
+
+            author = appState.Author;
+        }
+}

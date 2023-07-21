@@ -1,0 +1,63 @@
+﻿@page "/"
+@using blazor_author.Models;
+@using blazor_author.Services;
+@using AppStates;
+
+@inject AppState AppState;
+@inject IAuthorService _authorService;
+@inject NavigationManager NavigationManager;
+
+<PageTitle>Index</PageTitle>
+
+
+
+@if(allAuthors == null)
+{
+   <div>Loading...</div>
+}
+else{
+    
+    <table class="table">
+
+        <thead>
+            <tr>
+                <th>First name</th>
+                <th>Last name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+             @foreach(var author in allAuthors){
+                     <tr>
+                        <td>@author.FirstName</td>
+                        <td>@author.LastName</td>
+                        <td><a class="btn btn-primary" @onclick="()=> NavigateToAuthorDetail(author.Id)">Details</a> </td>
+                     </tr>
+             }
+        </tbody>
+
+    </table>
+    
+}
+
+
+@code {
+
+    private List<Author>? allAuthors;
+    
+    protected override async Task OnInitializedAsync(){
+        allAuthors =  await _authorService.GetAllAuthor();
+    }
+
+    private async Task NavigateToAuthorDetail(int id){
+
+
+        var author = await _authorService.GetAuthorById(id);
+
+    
+        AppState.Author = author;
+
+
+        NavigationManager.NavigateTo("/author/" + id);
+    }
+}
